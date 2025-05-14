@@ -67,7 +67,7 @@ export default async function TenantsPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {tenants.map((tenant) => (
+                    {tenants.map((tenant: Tenant) => (
                       <tr key={tenant.id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                           {tenant.user.name}

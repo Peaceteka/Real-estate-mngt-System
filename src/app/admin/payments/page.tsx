@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db';
+import { Payment } from '@/types';
 
 export default async function PaymentsPage() {
   const payments = await prisma.payment.findMany({
@@ -70,7 +71,7 @@ export default async function PaymentsPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {payments.map((payment) => (
+                    {payments.map((payment: Payment) => (
                       <tr key={payment.id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                           {payment.tenant.user.name}
