@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  clients   Client[]
+}
+
+model Client {
+  id           String   @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String   @unique
+  phone        String?
+  address      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  properties   Property[]
+  transactions Transaction[]
+}
+
+model Property {
+  id           String        @id @default(uuid())
+  title        String
+  description  String?
+  type         PropertyType
+  status       PropertyStatus @default(AVAILABLE)
+  price        Float
+  address      String
+  bedrooms     Int?
+  bathrooms    Int?
+  area         Float?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  clientId     String
+  client       Client        @relation(fields: [clientId], references: [id])
+  transactions Transaction[]
+}
+
+model Transaction {
+  id         String            @id @default(uuid())
+  type       TransactionType
+  status     TransactionStatus @default(PENDING)
+  amount     Float
+  date       DateTime
+  notes      String?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  clientId   String
+  client     Client           @relation(fields: [clientId], references: [id])
+  propertyId String
+  property   Property         @relation(fields: [propertyId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  CONDO
+  LAND
+  COMMERCIAL
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  SOLD
+  RENTED
+  UNDER_CONTRACT
+  OFF_MARKET
+}
+
+enum TransactionType {
+  SALE
+  RENTAL
+  LEASE
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
