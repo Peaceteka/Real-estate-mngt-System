@@ -2,9 +2,9 @@ import Link from 'next/link';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Properties', href: '/properties', icon: BuildingOfficeIcon },
-  { name: 'Clients', href: '/clients', icon: UsersIcon },
-  { name: 'Transactions', href: '/transactions', icon: CurrencyDollarIcon },
+  { name: 'Properties', href: '/admin/properties', icon: BuildingOfficeIcon },
+  { name: 'Tenants', href: '/admin/tenants', icon: UsersIcon },
+  { name: 'Payments', href: '/admin/payments', icon: CurrencyDollarIcon },
   { name: 'Reports', href: '/reports', icon: ChartBarIcon },
 ];
 
