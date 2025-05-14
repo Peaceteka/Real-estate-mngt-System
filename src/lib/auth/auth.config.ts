@@ -24,6 +24,7 @@ declare module 'next-auth/jwt' {
 }
 
 export const authOptions: NextAuthOptions = {
+  secret: 'your-super-secret-key-at-least-32-chars-long-here',
   session: {
     strategy: 'jwt'
   },
@@ -81,6 +82,7 @@ export const authOptions: NextAuthOptions = {
       }
     })
   ],
+  debug: true,
   callbacks: {
     async session({ session, token }) {
       if (token) {
