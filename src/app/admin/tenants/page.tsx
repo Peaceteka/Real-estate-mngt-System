@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db';
+import { Tenant } from '@/types';
 
 export default async function TenantsPage() {
   const tenants = await prisma.tenant.findMany({
