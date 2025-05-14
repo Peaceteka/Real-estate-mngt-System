@@ -1,7 +1,9 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { prisma } from '../db';
+import { PrismaClient } from '@prisma/client';
 import { compare } from 'bcrypt';
+
+const prisma = new PrismaClient();
 
 type ExtendedUser = {
   id: string;
@@ -36,32 +38,46 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
+        try {
+          console.log('Attempting authorization with:', credentials?.email);
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email
+          if (!credentials?.email || !credentials?.password) {
+            console.log('Missing credentials');
+            throw new Error('Missing email or password');
           }
-        });
 
-        if (!user) {
-          return null;
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email
+            }
+          });
+
+          console.log('Found user:', user ? 'yes' : 'no');
+
+          if (!user) {
+            throw new Error('User not found');
+          }
+
+          const isPasswordValid = await compare(credentials.password, user.password);
+          console.log('Password valid:', isPasswordValid);
+
+          if (!isPasswordValid) {
+            throw new Error('Invalid password');
+          }
+
+          const userResponse = {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          };
+
+          console.log('Authorization successful');
+          return userResponse;
+        } catch (error) {
+          console.error('Auth error:', error);
+          throw error;
         }
-
-        const isPasswordValid = await compare(credentials.password, user.password);
-
-        if (!isPasswordValid) {
-          return null;
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
       }
     })
   ],
